@@ -1,0 +1,66 @@
+name: Test and publish
+# Tests the converter (every example both ways, the generated Python is run),
+# checks the page in Chromium, then publishes the site to the gh-pages branch
+# (served at https://mr-douglas.github.io/igcse-pseudocode/).
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: publish
+  cancel-in-progress: true
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Converter tests
+        run: |
+          mkdir -p "$RUNNER_TEMP/results"
+          node test/run.js | tee "$RUNNER_TEMP/results/tests.txt"
+          node test/fuzz.js | tee -a "$RUNNER_TEMP/results/tests.txt"
+      - name: Browser test
+        run: |
+          npm install --silent --prefix "$RUNNER_TEMP/pw" playwright
+          "$RUNNER_TEMP/pw/node_modules/.bin/playwright" install --with-deps chromium
+          python3 -m http.server 8000 >/dev/null 2>&1 &
+          sleep 1
+          NODE_PATH="$RUNNER_TEMP/pw/node_modules" OUT="$RUNNER_TEMP/results" node test/browser.cjs
+      - name: Publish to gh-pages
+        run: |
+          site="$RUNNER_TEMP/site"
+          mkdir -p "$site"
+          cp -r index.html style.css js .nojekyll "$site/"
+          cd "$site"
+          git init -q -b gh-pages
+          git config user.name "github-actions[bot]"
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A
+          git commit -qm "Publish ${GITHUB_SHA}"
+          git push -qf "https://x-access-token:${{ github.token }}@github.com/${GITHUB_REPOSITORY}.git" gh-pages
+      - name: Check the live site
+        if: always()
+        run: |
+          for i in $(seq 1 30); do
+            code=$(curl -s -o "$RUNNER_TEMP/results/live.html" -w '%{http_code}' https://mr-douglas.github.io/igcse-pseudocode/js/convert.js || true)
+            echo "attempt $i: $code"
+            [ "$code" = "200" ] && break
+            sleep 20
+          done
+          echo "$code" > "$RUNNER_TEMP/results/live-status.txt"
+          curl -s https://api.github.com/repos/${GITHUB_REPOSITORY}/pages -H "Authorization: Bearer ${{ github.token }}" > "$RUNNER_TEMP/results/pages-api.json" || true
+      - name: Save results to the ci-results branch
+        if: always()
+        run: |
+          cd "$RUNNER_TEMP/results"
+          git init -q -b ci-results
+          git config user.name "github-actions[bot]"
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A
+          git commit -qm "Results for ${GITHUB_SHA}" --allow-empty
+          git push -qf "https://x-access-token:${{ github.token }}@github.com/${GITHUB_REPOSITORY}.git" ci-results

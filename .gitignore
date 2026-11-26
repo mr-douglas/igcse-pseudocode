@@ -1,0 +1,4 @@
+test/tmp.py
+test/*.txt
+test/__pycache__/
+node_modules/
