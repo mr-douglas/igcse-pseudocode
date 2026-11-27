@@ -1,0 +1,16 @@
+{
+  "url": "https://api.github.com/repos/mr-douglas/igcse-pseudocode/pages",
+  "status": "built",
+  "cname": null,
+  "custom_404": true,
+  "html_url": "https://mr-douglas.github.io/igcse-pseudocode/",
+  "build_type": "legacy",
+  "source": {
+    "branch": "gh-pages",
+    "path": "/"
+  },
+  "public": true,
+  "protected_domain_state": null,
+  "pending_domain_unverified_at": null,
+  "https_enforced": true
+}

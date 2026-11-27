@@ -1,0 +1,29 @@
+[
+  {
+    "name": "first example converted",
+    "ok": true
+  },
+  {
+    "name": "python -> pseudocode",
+    "ok": true,
+    "detail": "DECLARE Total : INTEGER\nDECLARE i : INTEGER\n\nTotal ← 0\nFOR i ← 1 TO 5\n    Total ← Total + i\nNEXT i\nOUTPUT \"Total:\", Total"
+  },
+  {
+    "name": "typing <- becomes ←",
+    "ok": true
+  },
+  {
+    "name": "pseudocode -> python",
+    "ok": true,
+    "detail": "X: int\nX = 5\nprint(X * 2)"
+  },
+  {
+    "name": "examples menu",
+    "ok": true
+  },
+  {
+    "name": "no page errors",
+    "ok": true,
+    "detail": ""
+  }
+]

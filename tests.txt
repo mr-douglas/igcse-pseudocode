@@ -1,0 +1,18 @@
+ok  Variables, constants, input and output
+ok  Nested IF statements
+ok  CASE statement
+ok  Nested FOR loops and a 2D array
+ok  REPEAT and WHILE loops
+ok  Procedures
+ok  Functions
+ok  String operations, MOD, DIV, ROUND and RANDOM
+ok  Linear search
+ok  Bubble sort
+ok  File handling
+ok  py: student style program
+ok  py: functions, constants, while True and slicing
+ok  py: arrays and match
+ok  py: unsupported Python is flagged, not invented
+
+all passed
+8865 prefixes, 0 crashes
