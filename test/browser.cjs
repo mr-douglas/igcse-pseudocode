@@ -29,7 +29,7 @@ const fs = require('fs');
   const py = await page.inputValue('#python');
   check('pseudocode -> python', py.includes('X = 5') && py.includes('print(X * 2)'), py);
 
-  await page.selectOption('#examples', { index: 4 });
+  await page.selectOption('#examples', { label: 'REPEAT and WHILE loops' });
   await page.waitForTimeout(400);
   check('examples menu', (await page.inputValue('#python')).includes('while True:'));
   await page.screenshot({ path: `${out}/screenshot.png` });
